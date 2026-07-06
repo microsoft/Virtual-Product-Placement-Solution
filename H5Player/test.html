@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/public/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>H5 Video Overlay - Demo</title>
+  </head>
+  <body>
+    <main>
+      <video
+        id="player-video"
+        controls
+        preload="metadata"
+        muted
+        crossorigin="anonymous"
+        src="./video.mp4"
+      ></video>
+    </main>
+    <script src="./virtual-ads-sdk.js"></script>
+    <script>
+      const videoElement = document.getElementById("player-video");
+      VirtualAdsSDK.create(
+        videoElement,
+        "", //Platform Id, obtained from the account registration email.
+        [], //User tags, an array of strings, can be empty array []
+        "", //Video Id,the Id entered when uploading videos to Fusion.
+        {
+          enableStartPtsIgnoreEditList: false, //enable start pts ignore editlist, default is false
+          enablePackage: true, //enable package, default is true
+          canvasObjectFitMode: "contain", //canvas object-fit mode, default is "contain"
+        },
+      );
+    </script>
+  </body>
+</html>
