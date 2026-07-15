@@ -1,63 +1,143 @@
-# Android ExoPlayer VARender SDK
+# Virtual Ads Android SDK — Integration Guide
 
-ExoPlayer (AndroidX Media3) based **Virtual Ads Rendering SDK** for Android — the
-Android counterpart of [`H5Player/`](../H5Player) in this repository.
+A pre-built AAR that overlays server-driven virtual ads onto video played by
+AndroidX Media3 ExoPlayer.
 
-The SDK attaches a GL `VirtualAdsEffect` shader to an ExoPlayer instance and
-overlays product-placement ads on top of live video without touching the
-publisher's playback pipeline.
+| Item | Value |
+|---|---|
+| Artifact   | [`libs/varender-sdk-release.aar`](libs/varender-sdk-release.aar) |
+| Version    | 1.0.0 |
+| minSdk     | 24 |
+| Media3     | 1.4.1 |
+| License    | MIT |
 
-## Requirements
+---
 
-- `minSdk` 24, `compileSdk` 34
-- AGP 7.1+ (tested with 7.1.2), Kotlin 1.8+
-- AndroidX Media3 1.4.1 (pinned — see [varender-sdk/build.gradle](varender-sdk/build.gradle))
-- JDK 17
+## 1. Add the AAR
 
-## Build
-
-```bash
-./gradlew :varender-sdk:assembleRelease
-```
-
-Output AAR: `varender-sdk/build/outputs/aar/varender-sdk-release.aar`
-
-## Publish
-
-To Maven Local (for local testing):
-
-```bash
-./gradlew :varender-sdk:publishToMavenLocal
-```
-
-To Maven Central (requires PGP key + Sonatype credentials as Gradle properties
-`signingKey`, `signingPassword`, `sonatypeUsername`, `sonatypePassword`):
-
-```bash
-./gradlew :varender-sdk:publishReleasePublicationToSonatypeRepository
-```
-
-## Consume as a dependency
-
-Once published to Maven Central:
+Copy `libs/varender-sdk-release.aar` into your app module's `libs/` folder,
+then in `app/build.gradle`:
 
 ```groovy
+android {
+    compileSdk 34
+    defaultConfig { minSdk 24 }
+}
+
+repositories {
+    google()
+    mavenCentral()
+}
+
 dependencies {
-    implementation 'com.microsoft.varender:varender-sdk:1.0.0'
+    implementation files('libs/varender-sdk-release.aar')
+
+    // AARs don't carry transitive deps — declare them explicitly:
+    def media3 = '1.4.1'
+    implementation "androidx.media3:media3-exoplayer:$media3"
+    implementation "androidx.media3:media3-effect:$media3"
+    implementation "androidx.media3:media3-common:$media3"
+    implementation "androidx.media3:media3-exoplayer-hls:$media3"
+
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.25'
 }
 ```
 
-## Third-party components
+Add internet permission to `AndroidManifest.xml`:
 
-| Component | License |
+```xml
+<uses-permission android:name="android.permission.INTERNET" />
+```
+
+## 2. Integrate
+
+Three steps: create SDK, create effect, hand effect to ExoPlayer **before**
+`prepare()`.
+
+```java
+import com.microsoft.varender.sdk.VirtualAdsSDK;
+import com.microsoft.varender.effect.VirtualAdsEffect;
+import com.microsoft.varender.data.Environment;
+import com.microsoft.varender.data.OverlayData;
+
+private VirtualAdsSDK    sdk;
+private VirtualAdsEffect effect;
+
+void initSdk(ExoPlayer exoPlayer) {
+    sdk = new VirtualAdsSDK("<your-secret-key>", Environment.PROD);
+
+    // 1) create an empty effect (no network) so we can attach it before prepare()
+    effect = sdk.createEmptyEffect(/* enableStartPtsIgnoreEditList = */ false);
+    effect.autoAnchorFirstPts = true;   // required — see §3
+
+    // 2) attach BEFORE prepare()
+    exoPlayer.setVideoEffects(java.util.Collections.singletonList(effect));
+
+    // 3) load overlay data in the background; ads appear when data arrives
+    sdk.loadIntoAsync(
+        effect, "<publisher-video-id>", "mobile",
+        java.util.Collections.emptyList(),
+        new VirtualAdsSDK.Callback<OverlayData>() {
+            @Override public void onSuccess(OverlayData d) { }
+            @Override public void onError(Exception e)     { }
+        });
+}
+```
+
+That's it. When playback ends, `exoPlayer.clearVideoEffects()` releases the
+effect.
+
+## 3. Two flags you must set correctly
+
+```java
+effect = sdk.createEmptyEffect(/* enableStartPtsIgnoreEditList = */ false);
+effect.autoAnchorFirstPts = true;
+```
+
+- `autoAnchorFirstPts = true` — anchors the first frame's PTS to 0. Required
+  for any ExoPlayer wrapper that injects a non-zero PTS baseline (common in
+  HLS / OTT stacks).
+- `enableStartPtsIgnoreEditList = false` — must be `false` whenever
+  `autoAnchorFirstPts` is `true`, otherwise the first frame index goes
+  negative and no overlay renders.
+
+If overlays never draw, this is almost always the cause.
+
+## 4. Environment
+
+```java
+new VirtualAdsSDK(key, Environment.PROD);   // production
+new VirtualAdsSDK(key, Environment.DEV);    // development (default)
+```
+
+## 5. Verify
+
+Filter logs on device:
+
+```
+adb logcat -s VirtualAdsSDK:* VirtualAdsEffect:*
+```
+
+Healthy signature:
+
+```
+VirtualAdsSDK  : Overlay data loaded: N frames, M ad slots, ..., deliveryId=<int>
+VirtualAdsEffect: SYNC_DEBUG: pts=0us ... finalFrame=0 hasOverlay=true
+VirtualAdsSDK  : uploadExposureLog dispatch: slot='18' adProductId=23 frames=30
+```
+
+## 6. Troubleshooting
+
+| Symptom | Fix |
 |---|---|
-| `androidx.media3:media3-*` 1.4.1 | Apache-2.0 |
-| `com.squareup.okhttp3:okhttp` 4.12.0 | Apache-2.0 |
-| `com.google.code.gson:gson` 2.10.1 | Apache-2.0 |
-| `org.jetbrains.kotlinx:kotlinx-coroutines-*` 1.7.3 | Apache-2.0 |
-| `androidx.core:core-ktx` 1.10.1 | Apache-2.0 |
-| `pl.droidsonroids.gif:android-gif-drawable` 1.2.25 | MIT |
+| `hasOverlay=false`, `finalFrame=-2` | Set `enableStartPtsIgnoreEditList = false`. |
+| `hasOverlay=false`, `finalFrame` is huge | Set `effect.autoAnchorFirstPts = true`. |
+| `NoClassDefFoundError` at runtime | Add all transitive deps from §1. |
+| `D8: NullPointerException` at build | Build with JDK 17 (not 21); keep `android-gif-drawable` pinned at `1.2.25`. |
+| Effect never fires | `setVideoEffects(...)` must be called **before** `prepare()`. |
 
-## License
-
-MIT — see the repository root [LICENSE.txt](../LICENSE.txt).
+Issues: <https://github.com/microsoft/Virtual-Product-Placement-Solution/issues>
