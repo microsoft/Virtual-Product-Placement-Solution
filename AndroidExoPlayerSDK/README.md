@@ -35,10 +35,10 @@ frames rendered by your existing ExoPlayer instance. It:
 1. `POST /api/Preference/pubVideoId/{id}/delivery` → returns an
    `OverlayData` payload (per-frame element boxes, ad slots, fps, resolution,
    `deliveryId`).
-2. Installs a Media3 [`VideoEffect`](https://developer.android.com/reference/androidx/media3/common/Effect)
-   into your player. The effect runs on the GL render thread and, for each
-   emitted frame, looks up the matching overlay, decodes the GIF frame, and
-   draws it into the video texture.
+2. Installs its `VirtualAdsEffect` into your player as a Media3 effect. The
+   effect runs on the GL render thread and, for each emitted frame, looks
+   up the matching overlay, decodes the GIF frame, and draws it into the
+   video texture.
 3. Counts exposed frames per ad slot (scaled by playback speed) and posts
    `POST /api/AdLog/AdProduct/{adProductId}/Delivery/{deliveryId}/Impression`
    for each slot when the slot ends or the effect is released.
@@ -67,8 +67,11 @@ H5 player contract).
   metadata).
 - **JDK 17 for the build** — JDK 21 triggers a D8 NullPointerException on
   the SDK's Kotlin metadata. See [§14](#14-build-toolchain-constraints).
-- **Media3-based player**. Legacy `com.google.android.exoplayer2` is **not**
-  supported — the effect implements `androidx.media3.common.Effect`.
+- **Media3-based player** (AndroidX Media3 1.4.x). The SDK integrates as a
+  Media3 [`VideoEffect`](https://developer.android.com/reference/androidx/media3/common/Effect)
+  — you hand `VirtualAdsEffect` (which implements `androidx.media3.common.Effect`)
+  to `ExoPlayer.setVideoEffects(...)` before `prepare()`. Legacy
+  `com.google.android.exoplayer2` is **not** supported; migrate to Media3 first.
 - **Internet permission** at runtime.
 - A **secret key** and **publisher video ID** issued to you by the
   Virtual-Product-Placement service.
