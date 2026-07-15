@@ -1,0 +1,52 @@
+{
+	"DATA_FOLDER": "data",
+	"OUTPUT_FOLDER": "output",
+	"DEBUG": false,
+	"FRAMES_FOLDER": "frames",
+	"FRAME_MAX_LONG": 1280,
+	"FRAME_MAX_SHORT": 720,
+	"VIDEO_META": {
+		"META_JSON": "meta.json"
+	},
+	"AD_UNITS_EXTRACTION": {
+		"AD_UNITS_JSONS": "ad_units_jsons",
+		"SHOTS_JSON": "shots.json",
+		"AD_UNITS_JSON": "ad_units_pts.json",
+		"AD_UNITS_INSTANCES_JSON": "ad_units_instances.json",
+		"THRESHOLD_SBD": 0.3,
+		"THRESHOLD_ANGLE": 0.707,
+		"THRESHOLD_AREA_MIN": 0.01,
+		"THRESHOLD_AREA_MAX": 0.5,
+		"OCTAVE": 4,
+		"THRESHOLD_EDGE_RATIO": 0.5,
+		"THRESHOLD_FLOW": 5,
+		"THRESHOLD_NMS_IOU": 0.8,
+		"THRESHOLD_LAST_TIMES_IOU": 0.85,
+		"EPSILON": 0.1,
+		"THRESHOLD_LAST_TIMES": 60
+	},
+	"AD_UNITS_AUTO_DETECTION": {
+		"SKIPINSHOT": 10
+	},
+	"AD_UNITS_TRACKING": {
+		"MODIFIED_AD_UNITS_JSONS": "modified_ad_units_jsons",
+		"AD_UNITS_INSTANCES_JSON": "ad_units_instances.json",
+		"TRACKING_RESULT_FOR_DETECTION": "tracking_result_for_detection.json",
+		"TRACKING_BACKWARD": true,
+		"THRESHOLD_NCC_GOOD": 0.85,
+		"THRESHOLD_NCC_FAIL": 0.8,
+		"PYRAMIDAL_TRACKING": true,
+		"ROOTSIFT": true,
+		"SIFTRATIO": 0.85,
+		"REMOVEREPEAT": true,
+		"CMT_ESTIMATE_SCALE": true,
+		"CMT_ESTIMATE_ROTATION": false
+	},
+	"AD_EMBEDDING": {
+		"ADS_FOLDER": "ads",
+		"ADS_JSON": "ads.json",
+		"BORDERTYPE": 1,
+		"EMBEDDING_ALPHA": -0.9,
+		"USING_ALPHA_CHANNEL": false
+	}
+}
