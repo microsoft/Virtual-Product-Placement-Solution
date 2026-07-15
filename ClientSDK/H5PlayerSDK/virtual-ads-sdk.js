@@ -3822,7 +3822,7 @@ ${errors.filter((_) => _).join(`
       img.src = imageUrl;
       await new Promise((resolve, reject) => {
         img.onload = resolve;
-        img.onerror = () => reject(new Error("图片加载失败：" + imageUrl));
+        img.onerror = () => reject(new Error("Failed to load image: " + imageUrl));
       });
       const imgWidth = img.width;
       const imgHeight = img.height;
@@ -3840,7 +3840,7 @@ ${errors.filter((_) => _).join(`
       canvas.width = canvasWidth;
       canvas.height = canvasHeight;
       const ctx = canvas.getContext("2d");
-      if (!ctx) throw new Error("无法获取 2D 上下文！");
+      if (!ctx) throw new Error("Failed to get 2D context!");
       ctx.drawImage(img, offsetX, offsetY);
       if (customColor) {
         this.fillWithCustomColor(
