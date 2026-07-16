@@ -1,0 +1,54 @@
+PODS:
+  - RangersAppLog/Core (6.16.9):
+    - RangersAppLog/Encryptor/VOLC
+  - RangersAppLog/Encryptor/VOLC (6.16.9)
+  - RangersAppLog/Host/CN (6.16.9):
+    - RangersAppLog/Core
+  - TTSDKFramework/BMF (1.48.1.9-premium):
+    - TTSDKFramework/Core
+  - TTSDKFramework/Core (1.48.1.9-premium):
+    - RangersAppLog/Core (~> 6.16.8)
+    - RangersAppLog/Host/CN (~> 6.16.8)
+  - TTSDKFramework/Player (1.48.1.9-premium):
+    - TTSDKFramework/Core
+    - TTSDKFramework/PlayerCore/Normal
+    - TTSDKFramework/Reachability
+    - TTSDKFramework/TopSignature
+    - TTSDKFramework/VCN
+    - TTSDKFramework/VolcLog
+  - TTSDKFramework/Player-SR (1.48.1.9-premium):
+    - TTSDKFramework/BMF
+    - TTSDKFramework/Player
+  - TTSDKFramework/PlayerCore/Base (1.48.1.9-premium):
+    - TTSDKFramework/Core
+  - TTSDKFramework/PlayerCore/Normal (1.48.1.9-premium):
+    - TTSDKFramework/PlayerCore/Base
+    - TTSDKFramework/Tools
+    - TTSDKFramework/TTFFmpeg/Normal
+    - TTSDKFramework/VideoProcessor
+  - TTSDKFramework/Reachability (1.48.1.9-premium)
+  - TTSDKFramework/SSL (1.48.1.9-premium)
+  - TTSDKFramework/Tools (1.48.1.9-premium):
+    - TTSDKFramework/SSL
+  - TTSDKFramework/TopSignature (1.48.1.9-premium)
+  - TTSDKFramework/TTFFmpeg/Normal (1.48.1.9-premium):
+    - TTSDKFramework/Tools
+  - TTSDKFramework/VCN (1.48.1.9-premium)
+  - TTSDKFramework/VideoProcessor (1.48.1.9-premium)
+  - TTSDKFramework/VolcLog (1.48.1.9-premium)
+
+DEPENDENCIES:
+  - TTSDKFramework/Player-SR (= 1.48.1.9-premium)
+
+SPEC REPOS:
+  https://github.com/volcengine/volcengine-specs.git:
+    - RangersAppLog
+    - TTSDKFramework
+
+SPEC CHECKSUMS:
+  RangersAppLog: d4fa640a806e5fef583b07bea2f610684e81161e
+  TTSDKFramework: b0855add9dec57446e4eabb8e205993eb851d2e5
+
+PODFILE CHECKSUM: 92b4c8ac7a3840e4e7f597df0ad127a9f208e9a4
+
+COCOAPODS: 1.16.2

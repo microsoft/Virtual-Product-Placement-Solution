@@ -1,0 +1,21 @@
+move_object_class = {
+    "person": 0,
+    "bicycle": 1,
+    "car": 2,
+    "motorbike": 3,
+    'airplane': 4,
+    "bus": 5,
+    'train': 6,
+    "truck": 7,
+    'boat': 8,
+    "bird": 14,
+    "cat": 15,
+    "dog": 16,
+    'horse': 17,
+    'sheep': 18,
+    'cow' : 19,
+    'elephant' : 20,
+    'bear': 21,
+    'zebra': 22,
+    'giraffe' : 23
+}

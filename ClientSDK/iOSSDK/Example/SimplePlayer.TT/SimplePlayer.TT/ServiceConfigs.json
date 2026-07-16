@@ -1,0 +1,21 @@
+{
+    "videoServices": 
+    [
+        {
+            "pubVideoId": "26042004",
+            "secretKey": "aca406e8-5d40-41c2-a4e0-c6218bf5f9af",
+            "videoUrl": "https://vaserviceofficestar.blob.core.windows.net/origin/f6852af0-4d22-498e-ad9c-dc9edc4fbc67.mp4"
+        },
+        {
+            "pubVideoId": "26042005",
+            "secretKey": "aca406e8-5d40-41c2-a4e0-c6218bf5f9af",
+            "videoUrl": "https://vaserviceofficestar.blob.core.windows.net/origin/93c0ed06-c50f-4045-8428-5c4d05a8ecb6.mp4"
+        },
+        {
+            "pubVideoId": "26042006",
+            "secretKey": "aca406e8-5d40-41c2-a4e0-c6218bf5f9af",
+            "videoUrl": "https://vaserviceofficestar.blob.core.windows.net/origin/966b32c4-49f6-4439-9e7e-cf1cd3f6d376.mp4"
+        }
+
+    ]
+}

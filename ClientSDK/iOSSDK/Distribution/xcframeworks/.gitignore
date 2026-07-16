@@ -1,0 +1,3 @@
+# Generated XCFrameworks. Run ./Scripts/build-xcframeworks.sh from the
+# repo root to (re)build them — they are not committed.
+*.xcframework
